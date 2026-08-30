@@ -1,5 +1,4 @@
-
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import "./ChatWindow.css";
 import Chat from './Chat.jsx';
 import { MyContext } from './MyContext.jsx';
@@ -10,17 +9,47 @@ const ChatWindow = () => {
   const {
     prompt,
     setPrompt,
+    reply,
     setReply,
-    currThreadId
+    currThreadId,
+    setPrevChats,
   } = useContext(MyContext);
 
   const [loading, setLoading] = useState(false);
 
+  // reply change hone par chat me message add hoga
+  useEffect(() => {
+
+    if (reply) {
+      setPrevChats(prevChats => [
+        ...prevChats,
+        {
+          role: "assistant",
+          content: reply
+        }
+      ]);
+    }
+
+  }, [reply, setPrevChats]);
+
+
   const getReply = async () => {
 
-    // Empty message ya already running request ko stop karo
     if (!prompt.trim() || loading) return;
 
+    // Current prompt ko save kar rahe hain
+    const currentPrompt = prompt;
+
+    // User message pehle chat me add karo
+    setPrevChats(prevChats => [
+      ...prevChats,
+      {
+        role: "user",
+        content: currentPrompt
+      }
+    ]);
+
+    setPrompt("");
     setLoading(true);
 
     const options = {
@@ -29,7 +58,7 @@ const ChatWindow = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        message: prompt,
+        message: currentPrompt,
         threadId: currThreadId
       })
     };
@@ -47,17 +76,18 @@ const ChatWindow = () => {
 
       if (response.ok) {
 
+        // reply change hoga
+        // useEffect automatically chalega
         setReply(data.reply);
-        setPrompt("");
 
       } else if (response.status === 429) {
 
-        // Gemini quota/rate limit
         console.log("Rate Limit:", data);
 
       } else {
 
         console.log("Backend Error:", data);
+
       }
 
     } catch (err) {
@@ -69,6 +99,7 @@ const ChatWindow = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="chatwindow">
@@ -143,4 +174,3 @@ const ChatWindow = () => {
 };
 
 export default ChatWindow;
-
