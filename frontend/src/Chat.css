@@ -1,43 +1,63 @@
-.chats{
-      max-width: 700px;
-    height: calc(100vh - 180px);
-    overflow-y: auto;
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
 
+.chatWindow {
+    height: 100vh;
+    width: 100%;
+    background-color: #212121;
+    overflow: hidden;
+}
+
+.chats {
+    max-width: 700px;
+    height: calc(100vh - 180px);
+    margin: 0 auto;
     padding: 2rem;
 
-    /* scrollbar hide */
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-.userDiv{
+.chats::-webkit-scrollbar {
+    display: none;
+}
+
+.userDiv {
     display: flex;
     justify-content: flex-end;
     font-size: 0.9rem;
-
 }
 
-
-.gptDiv{
+.gptDiv {
     text-align: left;
     font-size: 0.9rem;
-
 }
 
-.userMessage{
+.userMessage {
     background-color: #323232;
     padding: 10px 20px;
     border-radius: 14px;
     margin-left: 15rem;
     max-width: 500px;
     width: fit-content;
-
 }
 
-.hljs{
+.hljs {
     border-radius: 14px !important;
 }
 
-pre{
+pre {
     white-space: pre-wrap;
 }

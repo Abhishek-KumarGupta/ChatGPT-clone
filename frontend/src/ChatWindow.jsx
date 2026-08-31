@@ -13,9 +13,11 @@ const ChatWindow = () => {
     setReply,
     currThreadId,
     setPrevChats,
+    setNewChat
   } = useContext(MyContext);
 
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   // reply change hone par chat me message add hoga
   useEffect(() => {
@@ -51,6 +53,7 @@ const ChatWindow = () => {
 
     setPrompt("");
     setLoading(true);
+    setNewChat(false)
 
     const options = {
       method: "POST",
@@ -100,6 +103,10 @@ const ChatWindow = () => {
     }
   };
 
+  const handleProfileClick=() =>{
+    setIsOpen(!isOpen)
+  }
+
 
   return (
     <div className="chatwindow">
@@ -111,7 +118,7 @@ const ChatWindow = () => {
           <i className="fa-solid fa-chevron-down"></i>
         </span>
 
-        <div className="userIconDiv">
+        <div className="userIconDiv" onClick={handleProfileClick}>
 
           <span className="userIcon">
             <i className="fa-solid fa-user"></i>
@@ -119,7 +126,20 @@ const ChatWindow = () => {
 
         </div>
 
+
       </div>
+      {
+        isOpen &&
+        <div className="dropDown">
+          <div className='dropDownItem'><i class="fa-solid fa-gear"></i>Setting</div>
+          <div className='dropDownItem'><i class="fa-solid fa-circle-arrow-up"></i>Upgrade plan </div>
+          <div className='dropDownItem'><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</div>
+
+
+        </div>
+      }
+
+
 
       <Chat />
 

@@ -77,6 +77,38 @@ function Sidebar() {
         }
     };
 
+
+    const deleteThread = async (threadId) => {
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/thread/${threadId}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Agar delete ho gaya toh UI se bhi remove kardo
+            setAllThreads(allThreads.filter(thread => thread.threadId !== threadId));
+            
+            // Agar current thread hi delete ho raha hai toh naya thread create kardo
+            if (currThreadId === threadId) {
+                setNewChat(true);
+                setPrompt("");
+                setReply(null);
+                setCurrThreadId(uuidv4());
+                setPrevChats([]);
+            }
+
+            console.log("Thread deleted successfully");
+        } catch (err) {
+            console.log("Error deleting thread:", err);
+        }
+    };
+
     return (
         <section className="sidebar">
 
@@ -97,8 +129,17 @@ function Sidebar() {
                     <li
                         key={thread.threadId}
                         onClick={() => changeThread(thread.threadId)}
+                        className={thread.threadId === currThreadId ? "highlighted" : ""}    
                     >
                         {thread.title}
+                        <i className="fa-solid fa-trash"
+                        
+                        onClick={(e) =>{
+                            e.stopPropagation();
+                            deleteThread(thread.threadId)
+                        }}
+
+                        ></i>
                     </li>
                 ))}
             </div>
